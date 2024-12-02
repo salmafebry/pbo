@@ -28,7 +28,7 @@ class Person:
 
 class Anggota(Person):
     def _init_(self, nama, alamat, id_anggota):
-        # Memanggil konstruktor kelas dasar (Person)
+        # Pewarisan: memanggil konstruktor kelas dasar (Person)
         super()._init_(nama, alamat)
         self.__id_anggota = id_anggota
         self.__buku_dipinjam = []  # Daftar buku yang dipinjam
@@ -113,4 +113,80 @@ class SistemPerpustakaan:
 
     # Metode untuk menghapus anggota
     def hapus_anggota(self, id_anggota):
-        self._anggota_list = [anggota for anggota in self.anggota_list if anggota.get_id
+        self._anggota_list = [anggota for anggota in self._anggota_list if anggota.get_id_anggota() != id_anggota]
+
+        # Metode untuk menambah buku
+    def tambah_buku(self, buku):
+        self.__buku_list.append(buku)
+
+    # Metode untuk menghapus buku
+    def hapus_buku(self, judul_buku):
+        self._buku_list = [buku for buku in self._buku_list if buku.get_judul() != judul_buku]
+
+    # Metode untuk menampilkan daftar anggota
+    def tampilkan_anggota(self):
+        for anggota in self.__anggota_list:
+            print(anggota.tampilkan_info())
+
+    # Metode untuk menampilkan daftar buku
+    def tampilkan_buku(self):
+        for buku in self.__buku_list:
+            print(buku.tampilkan_info())
+
+    # Metode untuk meminjam buku
+    def pinjam_buku(self, id_anggota, judul_buku):
+        anggota = next((anggota for anggota in self.__anggota_list if anggota.get_id_anggota() == id_anggota), None)
+        buku = next((buku for buku in self.__buku_list if buku.get_judul() == judul_buku), None)
+
+        if anggota and buku and buku.is_tersedia():
+            anggota.pinjam_buku(buku)
+            buku.pinjam()  # Menandai buku sebagai tidak tersedia
+            print(f"Buku '{judul_buku}' berhasil dipinjam oleh {anggota.get_nama()}.")
+        else:
+            print("Peminjaman gagal. Pastikan anggota dan buku tersedia.")
+
+    # Metode untuk mengembalikan buku
+    def kembalikan_buku(self, id_anggota, judul_buku):
+        anggota = next((anggota for anggota in self.__anggota_list if anggota.get_id_anggota() == id_anggota), None)
+        buku = next((buku for buku in self.__buku_list if buku.get_judul() == judul_buku), None)
+
+        if anggota and buku:
+            anggota.kembalikan_buku(buku)
+            buku.kembalikan()  # Menandai buku sebagai tersedia
+            print(f"Buku '{judul_buku}' berhasil dikembalikan oleh {anggota.get_nama()}.")
+        else:
+            print("Pengembalian gagal. Pastikan anggota dan buku valid.")
+
+
+# Contoh penggunaan
+if _name_ == "_main_":
+    # Membuat sistem perpustakaan
+    sistem = SistemPerpustakaan()
+
+    # Menambah anggota
+    anggota1 = Anggota("Alice", "Jl. Mawar No. 1", "A001")
+    anggota2 = Anggota("Bob", "Jl. Melati No. 2", "A002")
+    sistem.tambah_anggota(anggota1)
+    sistem.tambah_anggota(anggota2)
+
+    # Menambah buku
+    buku1 = Buku("Belajar Python", "John Doe", 2020)
+    buku2 = Buku("Pemrograman OOP", "Jane Smith", 2021)
+    sistem.tambah_buku(buku1)
+    sistem.tambah_buku(buku2)
+
+    # Menampilkan anggota dan buku
+    print("Daftar Anggota:")
+    sistem.tampilkan_anggota()
+    print("\nDaftar Buku:")
+    sistem.tampilkan_buku()
+
+    # Meminjam dan mengembalikan buku
+    sistem.pinjam_buku("A001", "Belajar Python")
+    sistem.kembalikan_buku("A001", "Belajar Python")
+
+    # Menampilkan informasi setelah peminjaman dan pengembalian
+    print("\nDaftar Anggota setelah peminjaman:")
+    sistem.tampilkan_anggota()
+    print("\nDaftar Buku setelah peminjaman:")
+    sistem.tampilkan_buku()
