@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{% if form.instance.id %}Edit Tugas{% else %}Tambah Tugas{% endif %}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Simpan</button>
+</form>
+<a href="{% url 'project_detail' project.id %}">Kembali</a>
+{% endblock %}

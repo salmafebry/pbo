@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Daftar Proyek</h2>
+<a href="{% url 'project_create' %}">Buat Proyek Baru</a>
+<ul>
+    {% for project in projects %}
+        <li><a href="{% url 'project_detail' project.id %}">{{ project.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
